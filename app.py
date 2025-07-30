@@ -1628,7 +1628,7 @@ def calculate_performance_metrics(metrics_df: pd.DataFrame) -> Dict[str, float]:
         
     except Exception as e:
         logger.error(f"Error calculating performance metrics: {e}")
-        return {'win_rate': 0, 'avg_winner': 0, 'avg_loser': 0, 'risk_reward': 0
+        return {'win_rate': 0, 'avg_winner': 0, 'avg_loser': 0, 'risk_reward': 0)
 
 def display_allocation_analysis_enhanced(metrics_df: pd.DataFrame):
     """Enhanced allocation analysis with rebalancing suggestions."""
