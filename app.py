@@ -2651,7 +2651,7 @@ st.set_page_config(
 
 # Enhanced CSS styling
 def load_custom_css():
-    """Load enhanced custom CSS styles - FIXED VERSION."""
+    """Load enhanced custom CSS styles - COMPLETELY FIXED VERSION."""
     css_content = """
     <style>
         /* Import modern fonts */
@@ -2659,7 +2659,7 @@ def load_custom_css():
         
         /* Main header styling */
         .main-header {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #667eea, #764ba2);
             color: white;
             text-align: center;
             padding: 2.5rem 1.5rem;
@@ -2698,7 +2698,7 @@ def load_custom_css():
         
         /* Welcome box */
         .welcome-box {
-            background: linear-gradient(135deg, #f0f9ff 0%, #dbeafe 100%);
+            background: linear-gradient(135deg, #f0f9ff, #dbeafe);
             border: 2px solid #3b82f6;
             padding: 2.5rem;
             border-radius: 16px;
@@ -2799,8 +2799,9 @@ def load_custom_css():
         
         /* Loading animations */
         @keyframes pulse {
-            0%, 100% { opacity: 1; }
+            0% { opacity: 1; }
             50% { opacity: 0.5; }
+            100% { opacity: 1; }
         }
         
         .loading-pulse {
@@ -2842,17 +2843,15 @@ def load_custom_css():
             }
         }
         
-        /* Fix for Streamlit selectbox */
+        /* Fix for Streamlit components */
         .stSelectbox > div > div {
             border-radius: 8px;
         }
         
-        /* Fix for Streamlit text input */
         .stTextInput > div > div > input {
             border-radius: 8px;
         }
         
-        /* Fix for Streamlit number input */
         .stNumberInput > div > div > input {
             border-radius: 8px;
         }
