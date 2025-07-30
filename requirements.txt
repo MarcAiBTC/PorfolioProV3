@@ -1,0 +1,93 @@
+# Portfolio Manager Pro - Enhanced Requirements
+# =============================================
+
+# Core Streamlit Framework
+streamlit>=1.30.0,<2.0.0
+
+# Data Processing & Analysis
+pandas>=2.0.0,<3.0.0
+numpy>=1.24.0,<2.0.0
+
+# Financial Data API - CRITICAL FIX
+yfinance>=0.2.18
+requests>=2.31.0
+urllib3>=2.0.0
+
+# Data Visualization  
+plotly>=5.15.0,<6.0.0
+
+# Date/Time Utilities
+python-dateutil>=2.8.2
+
+# Timezone Support (for market status)
+pytz>=2023.3
+
+# File Processing Support
+openpyxl>=3.1.0        # For Excel file support
+xlrd>=2.0.1            # For legacy Excel files
+
+# Security & Authentication (Built-in modules enhanced)
+# hashlib, secrets, base64 are built-in but we ensure latest Python
+
+# Optional: Enhanced Development Tools
+# Uncomment these for development/testing
+
+# Testing Framework
+# pytest>=7.4.0
+# pytest-cov>=4.1.0
+
+# Code Quality
+# black>=23.7.0
+# flake8>=6.0.0
+# isort>=5.12.0
+
+# Type Checking
+# mypy>=1.5.0
+
+# Documentation
+# sphinx>=7.1.0
+
+# Performance Monitoring
+# memory-profiler>=0.61.0
+
+# Enhanced Logging (Optional)
+# loguru>=0.7.0
+
+# Network & HTTP Enhancements
+certifi>=2023.7.22     # SSL certificate verification
+charset-normalizer>=3.2.0
+
+# JSON Processing
+ujson>=5.8.0           # Faster JSON processing (optional)
+
+# Performance Optimizations
+numba>=0.57.0          # JIT compilation for numerical functions (optional)
+
+# Development Server (for local testing)
+# gunicorn>=21.2.0     # For production deployment
+# uvicorn>=0.23.0      # Alternative ASGI server
+
+# Version Compatibility Notes:
+# - Python 3.8+ required
+# - Streamlit 1.30+ for latest features
+# - yfinance 0.2.18+ for improved API reliability
+# - pandas 2.0+ for better performance
+# - plotly 5.15+ for enhanced visualizations
+
+# Critical Dependencies for Core Functionality:
+# 1. streamlit - Web framework
+# 2. yfinance - Market data (MOST IMPORTANT FIX)
+# 3. pandas - Data processing  
+# 4. numpy - Numerical computing
+# 5. plotly - Interactive charts
+# 6. requests - HTTP requests
+# 7. pytz - Timezone handling
+
+# Installation Instructions:
+# pip install -r requirements.txt
+# 
+# For development:
+# pip install -r requirements.txt && pip install pytest black flake8
+#
+# For production:
+# pip install -r requirements.txt --no-dev
