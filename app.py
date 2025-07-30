@@ -674,10 +674,11 @@ def main():
     except Exception as e:
         handle_application_error_enhanced(e)
 
-# Application entry point
-if __name__ == "__main__":
-    main()def route_to_page_enhanced(selected_page: str):
-     '''Enhanced page routing with better error handling. '''
+# ========================
+# Enhanced page router
+# ========================
+def route_to_page_enhanced(selected_page: str):
+    '''Enhanced page routing with better error handling.'''
     try:
         if selected_page == "📊 Dashboard":
             display_portfolio_overview()
@@ -687,16 +688,22 @@ if __name__ == "__main__":
             upload_portfolio_page_enhanced()
         elif selected_page == "📚 Portfolio History":
             history_page_enhanced()
-        elif selected_page == "🔧 Settings":
+        elif selected_page == "⚙️ Settings":
             settings_page()
         elif selected_page == "❓ Help":
             help_page_enhanced()
         elif selected_page == "🚪 Sign Out":
             display_logout_confirmation_enhanced()
-    
+
     except Exception as e:
         st.error(f"❌ Page error: {str(e)}")
         logger.error(f"Page routing error for {selected_page}: {e}")
+
+# ========================
+# Main application launcher
+# ========================
+if __name__ == "__main__":
+    main()
 
 def upload_portfolio_page_enhanced():
     """Enhanced portfolio upload page with better validation and templates."""
