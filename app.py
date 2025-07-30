@@ -677,7 +677,7 @@ def main():
 # Application entry point
 if __name__ == "__main__":
     main()def route_to_page_enhanced(selected_page: str):
-    """Enhanced page routing with better error handling."""
+     '''Enhanced page routing with better error handling. '''
     try:
         if selected_page == "📊 Dashboard":
             display_portfolio_overview()
