@@ -90,11 +90,6 @@ def main():
     # 2) Construye la sidebar y lee la página seleccionada
     selected_page = create_sidebar_enhanced()
 
-    # 3) Si no está authenticado, muestro login/register
-    if not st.session_state.authenticated:
-        display_auth_page_enhanced()
-        return
-
     # 4) En sesión activa, muestro bienvenida o redirijo según la pestaña
     if st.session_state.show_welcome:
         show_welcome_message_enhanced()
@@ -4443,25 +4438,43 @@ def show_error_with_details(error_msg: str, details: str = None):
             st.markdown("• Try again in a few minutes")
 
 def safe_load_portfolio(username: str, filename: Optional[str] = None) -> bool:
-    """Enhanced portfolio loading with better error handling."""
+    """Enhanced portfolio loading with comprehensive error handling."""
     try:
-        # TODO: inicialización o checks previos si los necesitas
-
         with st.spinner("📂 Loading portfolio..."):
-            # Aquí va tu lógica de carga, por ejemplo:
             df = putils.load_portfolio(username, filename)
 
-            if df is None or df.empty:
-                st.warning("⚠️ Portfolio is empty or could not be loaded")
-                return False
+        if df is None or df.empty:
+            st.warning("⚠️ Portfolio is empty or could not be loaded")
+            return False
 
-            # Si llegó hasta aquí, cargo bien el portfolio:
-            st.session_state.portfolio_df = df
-            st.success(f"✅ Portfolio loaded successfully! ({len(df)} assets)")
-            return True
+        st.session_state.portfolio_df = df
+        st.success(f"✅ Portfolio loaded successfully! ({len(df)} assets)")
+        return True
 
     except Exception as e:
         st.error(f"❌ Error loading portfolio: {e}")
         return False
-if __name__ == "__main__":
-    main()
+
+
+def main():
+    """Punto de entrada principal de la app."""
+    initialize_session_state()
+    selected_page = create_sidebar_enhanced()
+
+    if not st.session_state.authenticated:
+        display_auth_page_enhanced()
+        return
+
+    # Enrutamiento de páginas
+    if selected_page == "📊 Dashboard":
+        display_portfolio_overview()
+    elif selected_page == "➕ Add Asset":
+        add_asset_page()
+    # … (el resto de tus páginas)
+    else:
+        display_empty_portfolio_guide()
+
+
+# === Aquí llamamos a main() sin guardia ===
+main()
+
