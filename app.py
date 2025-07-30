@@ -3669,3 +3669,11 @@ def safe_load_portfolio(username: str, filename: Optional[str] = None) -> bool:
     """Enhanced portfolio loading with better error handling."""
     try:
         with st.spinner("📂 Loading portfolio..."):
+            # Código que se ejecuta mientras está el spinner
+            st.write("Cargando portfolio...")
+            # Aquí pondrías la lógica real de carga
+            return True
+    except Exception as e:
+        show_error_with_details("❌ Error loading portfolio.", str(e))
+        return False
+
