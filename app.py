@@ -5,6 +5,19 @@ import streamlit as st
 if "authenticated" not in st.session_state:
     st.session_state["authenticated"] = False
 
+import logging
+
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.INFO)
+
+# Opcional: añade un handler si no estás en Streamlit Cloud
+if not logger.hasHandlers():
+    handler = logging.StreamHandler()
+    formatter = logging.Formatter('%(asctime)s — %(levelname)s — %(message)s')
+    handler.setFormatter(formatter)
+    logger.addHandler(handler)
+
+
 def display_unauthenticated_sidebar_enhanced():
     """Enhanced unauthenticated sidebar with app preview."""
     st.markdown("### 🔐 Please Sign In")
