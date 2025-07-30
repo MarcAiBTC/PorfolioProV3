@@ -39,6 +39,28 @@ from plotly.subplots import make_subplots
 from auth import authenticate_user, register_user
 import portfolio_utils as putils
 
+st.markdown("""
+    <style>
+    /* Main header styling */
+    .main-header {
+        background: linear-gradient(135deg, #667eea, #764ba2);
+        color: white;
+        text-align: center;
+        padding: 2.5rem 1.5rem;
+        border-radius: 16px;
+        margin-bottom: 2rem;
+        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        font-family: 'Inter', sans-serif;
+    }
+
+    .main-header h1 {
+        margin-bottom: 0.5rem;
+        font-weight: 700;
+        font-size: 2.5rem;
+    }
+    </style>
+""", unsafe_allow_html=True)
+
 # Configure logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -3369,15 +3391,12 @@ def load_custom_css():
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
         
         /* Main header styling */
-        .main-header {
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            color: white;
-            text-align: center;
-            padding: 2.5rem 1.5rem;
-            border-radius: 16px;
-            margin-bottom: 2rem;
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
-            font-family: 'Inter', sans-serif;
+        st.markdown("""
+            <div class="main-header">
+            <h1>📊 Portfolio Manager Pro</h1>
+            </div>
+            """, unsafe_allow_html=True)
+
         }
         
         .main-header h1 {
