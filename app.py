@@ -3407,7 +3407,6 @@ def load_custom_css():
             font-size: 2.5rem;
         }
     </style>
-""", unsafe_allow_html=True)
 
         
         .main-header p {
