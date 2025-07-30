@@ -2661,9 +2661,9 @@ st.set_page_config(
 
 # Enhanced CSS styling
 def load_custom_css():
-    """Load enhanced custom CSS styles."""
+    """Load enhanced custom CSS styles - COMPLETELY FIXED VERSION."""
     css_content = '''
-    <style>
+        <style>
         /* Import modern fonts */
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
 
@@ -2678,22 +2678,19 @@ def load_custom_css():
             box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
             font-family: 'Inter', sans-serif;
         }
-    </style>
-    '''
-    st.markdown(css_content, unsafe_allow_html=True)
 
         .main-header h1 {
             margin-bottom: 0.5rem;
             font-weight: 700;
             font-size: 2.5rem;
         }
-        
+
         .main-header p {
             opacity: 0.9;
             font-size: 1.2rem;
             margin: 0;
         }
-        
+
         /* Enhanced metric cards */
         .stMetric {
             background: white;
@@ -2703,12 +2700,12 @@ def load_custom_css():
             border: 1px solid #e2e8f0;
             transition: transform 0.2s ease;
         }
-        
+
         .stMetric:hover {
             transform: translateY(-2px);
             box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
         }
-        
+
         /* Welcome box */
         .welcome-box {
             background: linear-gradient(135deg, #f0f9ff, #dbeafe);
@@ -2716,10 +2713,9 @@ def load_custom_css():
             padding: 2.5rem;
             border-radius: 16px;
             margin-bottom: 2rem;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
         }
-        
-        /* Asset picker styling */
+
         .asset-picker {
             background: white;
             border: 2px solid #e2e8f0;
@@ -2728,7 +2724,10 @@ def load_custom_css():
             margin-bottom: 1rem;
             box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
         }
+        </style>
         
+    st.markdown(css_content, unsafe_allow_html=True)
+
         .asset-picker:hover {
             border-color: #667eea;
         }
