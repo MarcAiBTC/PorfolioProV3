@@ -3166,11 +3166,6 @@ def create_sidebar_enhanced():
             display_sidebar_status()
             
             return page
-        
-        else:
-            # Unauthenticated sidebar
-            display_unauthenticated_sidebar_enhanced()
-            return None
 
 def display_sidebar_portfolio_stats_enhanced():
     """Enhanced sidebar portfolio statistics."""
