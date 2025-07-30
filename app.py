@@ -2661,12 +2661,12 @@ st.set_page_config(
 
 # Enhanced CSS styling
 def load_custom_css():
-     '''Load enhanced custom CSS styles - COMPLETELY FIXED VERSION. '''
-    css_content =  '''
+    """Load enhanced custom CSS styles - COMPLETELY FIXED VERSION."""
+    css_content = '''
     <style>
         /* Import modern fonts */
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
-        
+
         /* Main header styling */
         .main-header {
             background: linear-gradient(135deg, #667eea, #764ba2);
@@ -2678,7 +2678,10 @@ def load_custom_css():
             box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
             font-family: 'Inter', sans-serif;
         }
-        
+    </style>
+    '''
+    st.markdown(css_content, unsafe_allow_html=True)
+
         .main-header h1 {
             margin-bottom: 0.5rem;
             font-weight: 700;
