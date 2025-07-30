@@ -5,6 +5,47 @@ import streamlit as st
 if "authenticated" not in st.session_state:
     st.session_state["authenticated"] = False
 
+def display_unauthenticated_sidebar_enhanced():
+    """Enhanced unauthenticated sidebar with app preview."""
+    st.markdown("### 🔐 Please Sign In")
+    st.write("Access your professional portfolio dashboard")
+    
+    st.markdown("### 🌟 App Features")
+    
+    features = [
+        "📈 **Real-time market data** from Yahoo Finance",
+        "📊 **Interactive dashboards** with advanced charts", 
+        "🎯 **Risk analysis** with VaR, Beta, and Sharpe ratio",
+        "💡 **AI recommendations** for portfolio optimization",
+        "📱 **Mobile responsive** design for any device",
+        "🔒 **Bank-grade security** with encrypted storage",
+        "🔍 **Smart asset picker** with 500+ popular assets",
+        "📤 **Bulk import** from CSV/JSON/Excel files"
+    ]
+    
+    for feature in features:
+        st.markdown(f"- {feature}")
+    
+    st.markdown("### 📊 Demo Preview")
+    
+    # Show a simple demo chart
+    try:
+        demo_data = pd.DataFrame({
+            'Asset': ['AAPL', 'MSFT', 'GOOGL', 'TSLA', 'SPY'],
+            'Value': [15000, 9000, 8000, 6000, 12000],
+            'Return': [12.5, 8.3, 15.2, -5.1, 9.8]
+        })
+        
+        fig = px.bar(demo_data, x='Asset', y='Value', color='Return',
+                     color_continuous_scale='RdYlGn',
+                     title="Sample Portfolio View")
+        fig.update_layout(height=300, showlegend=False)
+        st.plotly_chart(fig, use_container_width=True)
+        
+        st.caption("*Sample data - create account to track your real portfolio*")
+    except Exception as e:
+        st.caption("Demo chart unavailable")
+        
 def create_sidebar_enhanced():
     """Enhanced sidebar with better organization and features."""
     with st.sidebar:
