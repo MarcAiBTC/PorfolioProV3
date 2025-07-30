@@ -4481,4 +4481,4 @@ def main():
     # … (el resto de tus páginas)
     else:
         display_empty_portfolio_guide()
-
+main()
