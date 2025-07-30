@@ -3323,8 +3323,8 @@ def create_demo_portfolio():
 # Continue with remaining functions...
 def route_to_page_enhanced(selected_page: str):
     """Enhanced page routing with better error"""
- st.markdown("""   
-### Enhanced Financial Portfolio Manager - FIXED AND ENHANCED VERSION
+    st.markdown("""   
+    ### Enhanced Financial Portfolio Manager - FIXED AND ENHANCED VERSION
 ================================================================
 
 A comprehensive Streamlit application for managing investment portfolios with:
