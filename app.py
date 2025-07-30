@@ -24,6 +24,7 @@ import os
 import time
 import traceback
 import logging
+from typing import Optional
 import warnings
 from datetime import datetime, timedelta
 from typing import Optional, Dict, List, Tuple
@@ -4412,4 +4413,9 @@ def show_error_with_details(error_msg: str, details: str = None):
 def safe_load_portfolio(username: str, filename: Optional[str] = None) -> bool:
     """Enhanced portfolio loading with better error handling."""
     try:
-        with st.spinner("📂 Loading portfolio..."):
+    with st.spinner("📂 Loading portfolio..."):
+        # tu lógica aquí
+        ...
+    except Exception as e:
+        st.error(f"❌ Error loading portfolio: {e}")
+        return False
