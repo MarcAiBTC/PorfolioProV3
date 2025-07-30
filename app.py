@@ -2598,27 +2598,28 @@ def create_demo_portfolio():
 
 # Continue with remaining functions...
 def route_to_page_enhanced(selected_page: str):
-    """Enhanced page routing with better error"""
-Enhanced Financial Portfolio Manager - FIXED AND ENHANCED VERSION
-================================================================
+    """
+    Enhanced Financial Portfolio Manager - FIXED AND ENHANCED VERSION
+    ================================================================
 
-A comprehensive Streamlit application for managing investment portfolios with:
-- FIXED Yahoo Finance data fetching with robust error handling
-- Enhanced asset picker with popular assets database and search
-- Advanced visualizations and real-time metrics
-- Intelligent portfolio analysis and recommendations
-- Improved UI/UX with better error handling
+    A comprehensive Streamlit application for managing investment portfolios with:
+    - FIXED Yahoo Finance data fetching with robust error handling
+    - Enhanced asset picker with popular assets database and search
+    - Advanced visualizations and real-time metrics
+    - Intelligent portfolio analysis and recommendations
+    - Improved UI/UX with better error handling
 
-Key improvements:
-- Fixed price fetching issues with multiple fallback strategies
-- Added popular assets database with search functionality
-- Enhanced error handling and user feedback
-- Better data validation and cleaning
-- Improved portfolio analytics and recommendations
-- Mobile-responsive design with modern styling
+    Key improvements:
+    - Fixed price fetching issues with multiple fallback strategies
+    - Added popular assets database with search functionality
+    - Enhanced error handling and user feedback
+    - Better data validation and cleaning
+    - Improved portfolio analytics and recommendations
+    - Mobile-responsive design with modern styling
 
-Author: Enhanced by AI Assistant
-"""
+    Author: Marc
+    """
+
 
 import os
 import time
