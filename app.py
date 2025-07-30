@@ -4413,9 +4413,21 @@ def show_error_with_details(error_msg: str, details: str = None):
 def safe_load_portfolio(username: str, filename: Optional[str] = None) -> bool:
     """Enhanced portfolio loading with better error handling."""
     try:
-    with st.spinner("📂 Loading portfolio..."):
-        # tu lógica aquí
-        ...
+        # TODO: inicialización o checks previos si los necesitas
+
+        with st.spinner("📂 Loading portfolio..."):
+            # Aquí va tu lógica de carga, por ejemplo:
+            df = putils.load_portfolio(username, filename)
+
+            if df is None or df.empty:
+                st.warning("⚠️ Portfolio is empty or could not be loaded")
+                return False
+
+            # Si llegó hasta aquí, cargo bien el portfolio:
+            st.session_state.portfolio_df = df
+            st.success(f"✅ Portfolio loaded successfully! ({len(df)} assets)")
+            return True
+
     except Exception as e:
         st.error(f"❌ Error loading portfolio: {e}")
         return False
