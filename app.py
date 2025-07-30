@@ -3,6 +3,10 @@ from datetime import datetime
 import streamlit as st
 from typing import Dict, Any
 import pandas as pd
+import logging
+logger = logging.getLogger(__name__)
+import plotly.express as px
+
 
 if "authenticated" not in st.session_state:
     st.session_state["authenticated"] = False
@@ -18,6 +22,19 @@ if not logger.hasHandlers():
     formatter = logging.Formatter('%(asctime)s — %(levelname)s — %(message)s')
     handler.setFormatter(formatter)
     logger.addHandler(handler)
+
+def init_session_state():
+    defaults = {
+        "authenticated": False,
+        "education_mode": False,
+        "portfolio": None,
+        "last_update": None,
+        "selected_portfolio_file": None,
+        "portfolio_loaded": False,
+    }
+    for key, value in defaults.items():
+        if key not in st.session_state:
+            st.session_state[key] = value
 
 
 def display_unauthenticated_sidebar_enhanced():
