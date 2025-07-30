@@ -2,6 +2,9 @@ from typing import Optional
 from datetime import datetime
 import streamlit as st
 
+if "authenticated" not in st.session_state:
+    st.session_state["authenticated"] = False
+
 def create_sidebar_enhanced():
     """Enhanced sidebar with better organization and features."""
     with st.sidebar:
