@@ -3,11 +3,84 @@ from datetime import datetime
 import streamlit as st
 
 def create_sidebar_enhanced():
-    st.sidebar.title("📂 Portfolio Manager")
-    st.sidebar.markdown("Bienvenido a tu gestor de carteras financiero. Usa el menú para navegar.")
-    st.sidebar.divider()
-    st.sidebar.info("Consejo: puedes subir tu cartera o empezar desde cero.")
-
+    """Enhanced sidebar with better organization and features."""
+    with st.sidebar:
+        if st.session_state.authenticated:
+            # User profile section
+            st.markdown("### 👤 Welcome Back!")
+            st.write(f"**{st.session_state.username}**")
+            st.caption(f"Version: {st.session_state.app_version}")
+            
+            # Quick portfolio stats
+            display_sidebar_portfolio_stats_enhanced()
+            
+            # Navigation
+            st.markdown("### 🧭 Navigation")
+            page = st.radio(
+                "Choose a page:",
+                [
+                    "📊 Dashboard",
+                    "➕ Add Asset",
+                    "📤 Upload Portfolio", 
+                    "📚 Portfolio History",
+                    "🔧 Settings",
+                    "❓ Help",
+                    "🚪 Sign Out"
+                ],
+                label_visibility="collapsed"
+            )
+            
+            st.markdown("---")
+            
+            # Enhanced settings
+            display_sidebar_settings_enhanced()
+            
+            # Quick actions
+            display_sidebar_quick_actions_enhanced()
+            
+            # System status
+            display_sidebar_status()
+            
+            return page
+        
+        else:
+            # Unauthenticated sidebar
+            display_unauthenticated_sidebar_enhanced()
+            return None
+def display_auth_page_enhanced():
+    """Enhanced authentication page with better design and features."""
+    try:
+        # Main header
+        st.markdown("""
+        <div style="text-align: center; padding: 2rem 0;">
+            <h1 style="font-size: 3rem; margin-bottom: 0.5rem;">📊 Portfolio Manager Pro</h1>
+            <p style="font-size: 1.3rem; color: #64748b; margin-bottom: 3rem;">
+                Professional investment portfolio management with real-time analytics
+            </p>
+        </div>
+        """, unsafe_allow_html=True)
+        
+        # Feature highlights
+        display_feature_highlights_enhanced()
+        
+        st.markdown("---")
+        
+        # Authentication tabs
+        tab1, tab2 = st.tabs(["🔐 Sign In", "📝 Create Account"])
+        
+        with tab1:
+            display_login_form_enhanced()
+        
+        with tab2:
+            display_registration_form_enhanced()
+        
+        # Footer with security notice
+        display_security_notice_enhanced()
+        
+    except Exception as e:
+        logger.error(f"Error in auth page: {e}")
+        st.error("Error loading authentication page")
+        
 def handle_application_error_enhanced(error):
     st.error(f"❌ Application error: {str(error)}")
     st.stop()
