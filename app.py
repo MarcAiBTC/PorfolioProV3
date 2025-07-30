@@ -82,6 +82,43 @@ st.set_page_config(
 )
 
 # Enhanced CSS styling
+def main():
+    # 1) Carga CSS y estado
+    load_custom_css()
+    initialize_session_state()
+
+    # 2) Construye la sidebar y lee la página seleccionada
+    selected_page = create_sidebar_enhanced()
+
+    # 3) Si no está authenticado, muestro login/register
+    if not st.session_state.authenticated:
+        display_auth_page_enhanced()
+        return
+
+    # 4) En sesión activa, muestro bienvenida o redirijo según la pestaña
+    if st.session_state.show_welcome:
+        show_welcome_message_enhanced()
+        return
+
+    # 5) Ruteo páginas
+    if selected_page == "📊 Dashboard":
+        display_portfolio_overview()
+    elif selected_page == "➕ Add Asset":
+        add_asset_page()
+    elif selected_page == "📤 Upload Portfolio":
+        upload_portfolio_page_enhanced()
+    elif selected_page == "📚 Portfolio History":
+        history_page_enhanced()
+    elif selected_page == "🔧 Settings":
+        settings_page()
+    elif selected_page == "❓ Help":
+        help_page_enhanced()
+    elif selected_page == "🚪 Sign Out":
+        display_logout_confirmation_enhanced()
+    else:
+        # Por si alguien no selecciona nada
+        display_portfolio_overview()
+
 def load_custom_css():
     """Load enhanced custom CSS styles."""
     css_content = """
