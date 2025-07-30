@@ -82,6 +82,18 @@ st.set_page_config(
 )
 
 # Enhanced CSS styling
+def display_auth_page_enhanced():
+    """
+    Stub de prueba para la página de autenticación.
+    Reemplaza este contenido con tu formulario real de login/registro.
+    """
+    import streamlit as st
+
+    st.markdown("## 🔐 Autenticación (placeholder)")
+    st.info("Función `display_auth_page_enhanced` cargada correctamente.")
+    # Aquí iría tu lógica real de login/registro:
+    # e.g. st.text_input, st.form, authenticate_user(), register_user(), etc.
+
 def main():
     # 1) Carga CSS y estado
     load_custom_css()
