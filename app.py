@@ -7,7 +7,7 @@ A comprehensive Streamlit application for managing investment portfolios with:
 - Enhanced asset picker with popular assets database and search
 - Advanced visualizations and real-time metrics
 - Intelligent portfolio analysis and recommendations
-- Improved UI/UX with better error handling
+- Improved UI/UX with better error handlin
 
 Key improvements:
 - Fixed price fetching issues with multiple fallback strategies
