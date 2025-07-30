@@ -4461,10 +4461,6 @@ def main():
     initialize_session_state()
     selected_page = create_sidebar_enhanced()
 
-    if not st.session_state.authenticated:
-        display_auth_page_enhanced()
-        return
-
     # Enrutamiento de páginas
     if selected_page == "📊 Dashboard":
         display_portfolio_overview()
@@ -4473,8 +4469,4 @@ def main():
     # … (el resto de tus páginas)
     else:
         display_empty_portfolio_guide()
-
-
-# === Aquí llamamos a main() sin guardia ===
-main()
 
