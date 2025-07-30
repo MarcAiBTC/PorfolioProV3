@@ -2,6 +2,10 @@ from typing import Optional
 from datetime import datetime
 import streamlit as st
 
+def handle_application_error_enhanced(error):
+    st.error(f"❌ Application error: {str(error)}")
+    st.stop()
+
 def display_market_status():
     """Display current market status with error handling."""
     try:
