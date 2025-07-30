@@ -2354,7 +2354,7 @@ def help_page_enhanced():
                 - **Refresh Data**: Keep market data current
                 """)
         
-        st.warning("**Disclaimer**: This app is for informational purposes only. Not financialst.warning)
+        st.warning("**Disclaimer**: This app is for informational purposes only. Not financialst.warning")
         
     except Exception as e:
         logger.error(f"Error in help page: {e}")
