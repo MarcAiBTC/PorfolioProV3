@@ -2875,6 +2875,7 @@ def load_custom_css():
         }
     </style>
     """
+    """
     st.markdown(css_content, unsafe_allow_html=True)
 
 # Load CSS
