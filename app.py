@@ -1834,7 +1834,7 @@ def display_unauthenticated_sidebar_enhanced():
 # Application Entry Point
 # ============================================================================
 
-main()def safe_load_portfolio(username: str, filename: Optional[str] = None) -> bool:
+def safe_load_portfolio(username: str, filename: Optional[str] = None) -> bool:
     """Enhanced portfolio loading with better error handling."""
     try:
         with st.spinner("📂 Loading portfolio..."):
