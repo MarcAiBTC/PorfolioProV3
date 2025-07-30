@@ -4431,3 +4431,5 @@ def safe_load_portfolio(username: str, filename: Optional[str] = None) -> bool:
     except Exception as e:
         st.error(f"❌ Error loading portfolio: {e}")
         return False
+if __name__ == "__main__":
+    main()
