@@ -2663,219 +2663,201 @@ st.set_page_config(
 def load_custom_css():
     """Load enhanced custom CSS styles - COMPLETELY FIXED VERSION."""
     css_content = '''
-        <style>
-        /* Import modern fonts */
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+    <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
 
-        /* Main header styling */
+    /* Main header styling */
+    .main-header {
+        background: linear-gradient(135deg, #667eea, #764ba2);
+        color: white;
+        text-align: center;
+        padding: 2.5rem 1.5rem;
+        border-radius: 16px;
+        margin-bottom: 2rem;
+        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        font-family: 'Inter', sans-serif;
+    }
+
+    .main-header h1 {
+        margin-bottom: 0.5rem;
+        font-weight: 700;
+        font-size: 2.5rem;
+    }
+
+    .main-header p {
+        opacity: 0.9;
+        font-size: 1.2rem;
+        margin: 0;
+    }
+
+    /* Enhanced metric cards */
+    .stMetric {
+        background: white;
+        padding: 1.5rem;
+        border-radius: 12px;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        border: 1px solid #e2e8f0;
+        transition: transform 0.2s ease;
+    }
+
+    .stMetric:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+    }
+
+    .welcome-box {
+        background: linear-gradient(135deg, #f0f9ff, #dbeafe);
+        border: 2px solid #3b82f6;
+        padding: 2.5rem;
+        border-radius: 16px;
+        margin-bottom: 2rem;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    .asset-picker {
+        background: white;
+        border: 2px solid #e2e8f0;
+        border-radius: 12px;
+        padding: 1.5rem;
+        margin-bottom: 1rem;
+        box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+    }
+
+    .asset-picker:hover {
+        border-color: #667eea;
+    }
+
+    .status-success {
+        color: #10b981;
+        font-weight: 600;
+    }
+
+    .status-warning {
+        color: #f59e0b;
+        font-weight: 600;
+    }
+
+    .status-error {
+        color: #ef4444;
+        font-weight: 600;
+    }
+
+    .market-status {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.5rem 1rem;
+        border-radius: 8px;
+        font-size: 0.875rem;
+        font-weight: 500;
+    }
+
+    .market-open {
+        background-color: #dcfce7;
+        color: #166534;
+    }
+
+    .market-closed {
+        background-color: #fef2f2;
+        color: #991b1b;
+    }
+
+    .stButton > button {
+        border-radius: 8px;
+        border: none;
+        padding: 0.75rem 1.5rem;
+        font-weight: 500;
+        transition: all 0.2s ease;
+        box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+    }
+
+    .stButton > button:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    }
+
+    .recommendation-success {
+        background-color: #f0fdf4;
+        border-left: 4px solid #10b981;
+        border-radius: 12px;
+        padding: 1rem;
+        margin: 0.5rem 0;
+    }
+
+    .recommendation-warning {
+        background-color: #fffbeb;
+        border-left: 4px solid #f59e0b;
+        border-radius: 12px;
+        padding: 1rem;
+        margin: 0.5rem 0;
+    }
+
+    .recommendation-info {
+        background-color: #f0f9ff;
+        border-left: 4px solid #3b82f6;
+        border-radius: 12px;
+        padding: 1rem;
+        margin: 0.5rem 0;
+    }
+
+    @keyframes pulse {
+        0% { opacity: 1; }
+        50% { opacity: 0.5; }
+        100% { opacity: 1; }
+    }
+
+    .loading-pulse {
+        animation: pulse 2s ease-in-out infinite;
+    }
+
+    .feature-card {
+        background: white;
+        padding: 2rem;
+        border-radius: 12px;
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+        border: 1px solid #e2e8f0;
+        text-align: center;
+        transition: transform 0.2s ease;
+    }
+
+    .feature-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+    }
+
+    @media (max-width: 768px) {
         .main-header {
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            color: white;
-            text-align: center;
-            padding: 2.5rem 1.5rem;
-            border-radius: 16px;
-            margin-bottom: 2rem;
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
-            font-family: 'Inter', sans-serif;
+            padding: 1.5rem 1rem;
         }
-
         .main-header h1 {
-            margin-bottom: 0.5rem;
-            font-weight: 700;
-            font-size: 2.5rem;
+            font-size: 2rem;
         }
-
-        .main-header p {
-            opacity: 0.9;
-            font-size: 1.2rem;
-            margin: 0;
-        }
-
-        /* Enhanced metric cards */
-        .stMetric {
-            background: white;
-            padding: 1.5rem;
-            border-radius: 12px;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-            border: 1px solid #e2e8f0;
-            transition: transform 0.2s ease;
-        }
-
-        .stMetric:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
-        }
-
-        /* Welcome box */
         .welcome-box {
-            background: linear-gradient(135deg, #f0f9ff, #dbeafe);
-            border: 2px solid #3b82f6;
-            padding: 2.5rem;
-            border-radius: 16px;
-            margin-bottom: 2rem;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        }
-
-        .asset-picker {
-            background: white;
-            border: 2px solid #e2e8f0;
-            border-radius: 12px;
             padding: 1.5rem;
-            margin-bottom: 1rem;
-            box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
         }
-        </style>
-        
-    st.markdown(css_content, unsafe_allow_html=True)
+        .asset-picker {
+            padding: 1rem;
+        }
+    }
 
-        .asset-picker:hover {
-            border-color: #667eea;
-        }
-        
-        /* Status indicators */
-        .status-success {
-            color: #10b981;
-            font-weight: 600;
-        }
-        
-        .status-warning {
-            color: #f59e0b;
-            font-weight: 600;
-        }
-        
-        .status-error {
-            color: #ef4444;
-            font-weight: 600;
-        }
-        
-        /* Market status indicator */
-        .market-status {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-            padding: 0.5rem 1rem;
-            border-radius: 8px;
-            font-size: 0.875rem;
-            font-weight: 500;
-        }
-        
-        .market-open {
-            background-color: #dcfce7;
-            color: #166534;
-        }
-        
-        .market-closed {
-            background-color: #fef2f2;
-            color: #991b1b;
-        }
-        
-        /* Enhanced buttons */
-        .stButton > button {
-            border-radius: 8px;
-            border: none;
-            padding: 0.75rem 1.5rem;
-            font-weight: 500;
-            transition: all 0.2s ease;
-            box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
-        }
-        
-        .stButton > button:hover {
-            transform: translateY(-1px);
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-        }
-        
-        /* Recommendation cards */
-        .recommendation-success {
-            background-color: #f0fdf4;
-            border-left: 4px solid #10b981;
-            border-radius: 12px;
-            padding: 1rem;
-            margin: 0.5rem 0;
-        }
-        
-        .recommendation-warning {
-            background-color: #fffbeb;
-            border-left: 4px solid #f59e0b;
-            border-radius: 12px;
-            padding: 1rem;
-            margin: 0.5rem 0;
-        }
-        
-        .recommendation-info {
-            background-color: #f0f9ff;
-            border-left: 4px solid #3b82f6;
-            border-radius: 12px;
-            padding: 1rem;
-            margin: 0.5rem 0;
-        }
-        
-        /* Loading animations */
-        @keyframes pulse {
-            0% { opacity: 1; }
-            50% { opacity: 0.5; }
-            100% { opacity: 1; }
-        }
-        
-        .loading-pulse {
-            animation: pulse 2s ease-in-out infinite;
-        }
-        
-        /* Feature cards for homepage */
-        .feature-card {
-            background: white;
-            padding: 2rem;
-            border-radius: 12px;
-            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
-            border: 1px solid #e2e8f0;
-            text-align: center;
-            transition: transform 0.2s ease;
-        }
-        
-        .feature-card:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
-        }
-        
-        /* Mobile responsiveness */
-        @media (max-width: 768px) {
-            .main-header {
-                padding: 1.5rem 1rem;
-            }
-            
-            .main-header h1 {
-                font-size: 2rem;
-            }
-            
-            .welcome-box {
-                padding: 1.5rem;
-            }
-            
-            .asset-picker {
-                padding: 1rem;
-            }
-        }
-        
-        /* Fix for Streamlit components */
-        .stSelectbox > div > div {
-            border-radius: 8px;
-        }
-        
-        .stTextInput > div > div > input {
-            border-radius: 8px;
-        }
-        
-        .stNumberInput > div > div > input {
-            border-radius: 8px;
-        }
-        
-        /* General container improvements */
-        .block-container {
-            max-width: 1200px;
-            padding-top: 2rem;
-        }
+    .stSelectbox > div > div {
+        border-radius: 8px;
+    }
+
+    .stTextInput > div > div > input {
+        border-radius: 8px;
+    }
+
+    .stNumberInput > div > div > input {
+        border-radius: 8px;
+    }
+
+    .block-container {
+        max-width: 1200px;
+        padding-top: 2rem;
+    }
     </style>
-    """
-    """
+    '''
     st.markdown(css_content, unsafe_allow_html=True)
 
 # Load CSS
