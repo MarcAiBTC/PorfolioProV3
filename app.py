@@ -2,6 +2,12 @@ from typing import Optional
 from datetime import datetime
 import streamlit as st
 
+def create_sidebar_enhanced():
+    st.sidebar.title("📂 Portfolio Manager")
+    st.sidebar.markdown("Bienvenido a tu gestor de carteras financiero. Usa el menú para navegar.")
+    st.sidebar.divider()
+    st.sidebar.info("Consejo: puedes subir tu cartera o empezar desde cero.")
+
 def handle_application_error_enhanced(error):
     st.error(f"❌ Application error: {str(error)}")
     st.stop()
