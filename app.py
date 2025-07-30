@@ -1,3 +1,7 @@
+from typing import Optional
+from datetime import datetime
+import streamlit as st
+
 def display_market_status():
     """Display current market status with error handling."""
     try:
