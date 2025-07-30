@@ -2651,8 +2651,8 @@ st.set_page_config(
 
 # Enhanced CSS styling
 def load_custom_css():
-    """Load enhanced custom CSS styles - COMPLETELY FIXED VERSION."""
-    css_content = """
+     '''Load enhanced custom CSS styles - COMPLETELY FIXED VERSION. '''
+    css_content =  '''
     <style>
         /* Import modern fonts */
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
