@@ -72,7 +72,7 @@ def display_unauthenticated_sidebar_enhanced():
                      color_continuous_scale='RdYlGn',
                      title="Sample Portfolio View")
         fig.update_layout(height=300, showlegend=False)
-        st.plotly_chart(fig, use_container_width=True)
+        st.plotly_chart(fig, use_container_width=True, key="1")
         
         st.caption("*Sample data - create account to track your real portfolio*")
     except Exception as e:
@@ -1395,7 +1395,7 @@ def display_upload_preview_enhanced(df: pd.DataFrame, merge_option: str, usernam
             color='Total Value',
             color_continuous_scale='viridis'
         )
-        st.plotly_chart(fig, use_container_width=True)
+        st.plotly_chart(fig, use_container_width=True, key="2")
     
     # Data preview table
     st.subheader("📋 Data Preview")
@@ -1989,7 +1989,7 @@ def display_unauthenticated_sidebar_enhanced():
                  color_continuous_scale='RdYlGn',
                  title="Sample Portfolio View")
     fig.update_layout(height=300, showlegend=False)
-    st.plotly_chart(fig, use_container_width=True)
+    st.plotly_chart(fig, use_container_width=True, key="3")
     
     st.caption("*Sample data - create account to track your real portfolio*")
 
@@ -2226,7 +2226,7 @@ def display_offline_portfolio_summary(df: pd.DataFrame):
                     names='Asset Type',
                     title="Portfolio Allocation by Cost Basis"
                 )
-                st.plotly_chart(fig, use_container_width=True)
+                st.plotly_chart(fig, use_container_width=True, key="4")
         
         # Holdings table
         st.subheader("📋 Holdings (Offline)")
@@ -2298,7 +2298,7 @@ def display_performance_analysis_enhanced(metrics_df: pd.DataFrame):
                 labels={'P/L %': 'Return (%)'}
             )
             fig.update_layout(height=400, showlegend=False)
-            st.plotly_chart(fig, use_container_width=True)
+            st.plotly_chart(fig, use_container_width=True, key="5")
     
     with col2:
         # Dollar P/L chart
@@ -2314,7 +2314,7 @@ def display_performance_analysis_enhanced(metrics_df: pd.DataFrame):
                 labels={'P/L': 'Profit/Loss ($)'}
             )
             fig.update_layout(height=400, showlegend=False)
-            st.plotly_chart(fig, use_container_width=True)
+            st.plotly_chart(fig, use_container_width=True, key="6")
     
     # Performance distribution
     if 'P/L %' in metrics_df.columns and not metrics_df['P/L %'].isna().all():
@@ -2329,7 +2329,7 @@ def display_performance_analysis_enhanced(metrics_df: pd.DataFrame):
         )
         fig.add_vline(x=0, line_dash="dash", line_color="red", annotation_text="Break-even")
         fig.add_vline(x=metrics_df['P/L %'].mean(), line_dash="dash", line_color="blue", annotation_text="Average")
-        st.plotly_chart(fig, use_container_width=True)
+        st.plotly_chart(fig, use_container_width=True, key="7")
     
     # Performance metrics table
     st.subheader("📈 Performance Metrics")
@@ -2395,7 +2395,7 @@ def display_allocation_analysis_enhanced(metrics_df: pd.DataFrame):
                 color_discrete_sequence=px.colors.qualitative.Set3
             )
             fig.update_traces(textposition='inside', textinfo='percent+label')
-            st.plotly_chart(fig, use_container_width=True)
+            st.plotly_chart(fig, use_container_width=True, key="8")
     
     with col2:
         # Top holdings
@@ -2410,7 +2410,7 @@ def display_allocation_analysis_enhanced(metrics_df: pd.DataFrame):
                 color_discrete_sequence=px.colors.qualitative.Pastel
             )
             fig.update_traces(textposition='inside', textinfo='percent+label')
-            st.plotly_chart(fig, use_container_width=True)
+            st.plotly_chart(fig, use_container_width=True, key="9")
     
     # Rebalancing suggestions
     rebalancing_data = putils.suggest_rebalancing(metrics_df)
@@ -2429,7 +2429,7 @@ def display_allocation_analysis_enhanced(metrics_df: pd.DataFrame):
                 color='weight',
                 color_continuous_scale='Blues'
             )
-            st.plotly_chart(current_fig, use_container_width=True)
+            st.plotly_chart(current_fig, use_container_width=True, key="10")
         
         with col2:
             st.write("**Suggested Allocation:**")
@@ -2441,7 +2441,7 @@ def display_allocation_analysis_enhanced(metrics_df: pd.DataFrame):
                 color='weight',
                 color_continuous_scale='Greens'
             )
-            st.plotly_chart(suggested_fig, use_container_width=True)
+            st.plotly_chart(suggested_fig, use_container_width=True, key="11")
         
         # Rebalancing actions
         st.subheader("🎯 Rebalancing Actions")
@@ -2488,7 +2488,7 @@ def display_market_insights(metrics_df: pd.DataFrame):
                         labels={'x': 'Beta', 'y': 'Count'}
                     )
                     fig.add_vline(x=1, line_dash="dash", annotation_text="Market Beta")
-                    st.plotly_chart(fig, use_container_width=True)
+                    st.plotly_chart(fig, use_container_width=True, key="12")
     
     # Sector analysis (if we can determine sectors)
     if 'Asset Type' in metrics_df.columns:
