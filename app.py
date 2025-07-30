@@ -1980,7 +1980,7 @@ def load_custom_css():
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
         
         /* Global variables */
-        :root {
+        .css-variables {
             --primary-color: #667eea;
             --secondary-color: #764ba2;
             --success-color: #10b981;
@@ -1990,20 +1990,17 @@ def load_custom_css():
             --text-primary: #1e293b;
             --text-secondary: #64748b;
             --border-color: #e2e8f0;
-            --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
-            --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
         }
         
         /* Main header styling */
         .main-header {
-            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
             text-align: center;
             padding: 2.5rem 1.5rem;
             border-radius: 16px;
             margin-bottom: 2rem;
-            box-shadow: var(--shadow-lg);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
             font-family: 'Inter', sans-serif;
         }
         
@@ -2024,14 +2021,14 @@ def load_custom_css():
             background: white;
             padding: 1.5rem;
             border-radius: 12px;
-            box-shadow: var(--shadow-md);
-            border: 1px solid var(--border-color);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            border: 1px solid #e2e8f0;
             transition: transform 0.2s ease, box-shadow 0.2s ease;
         }
         
         .stMetric:hover {
             transform: translateY(-2px);
-            box-shadow: var(--shadow-lg);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
         }
         
         /* Welcome box */
@@ -2041,36 +2038,36 @@ def load_custom_css():
             padding: 2.5rem;
             border-radius: 16px;
             margin-bottom: 2rem;
-            box-shadow: var(--shadow-md);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
         }
         
         /* Asset picker styling */
         .asset-picker {
             background: white;
-            border: 2px solid var(--border-color);
+            border: 2px solid #e2e8f0;
             border-radius: 12px;
             padding: 1.5rem;
             margin-bottom: 1rem;
-            box-shadow: var(--shadow-sm);
+            box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
         }
         
         .asset-picker:hover {
-            border-color: var(--primary-color);
+            border-color: #667eea;
         }
         
         /* Status indicators */
         .status-success {
-            color: var(--success-color);
+            color: #10b981;
             font-weight: 600;
         }
         
         .status-warning {
-            color: var(--warning-color);
+            color: #f59e0b;
             font-weight: 600;
         }
         
         .status-error {
-            color: var(--error-color);
+            color: #ef4444;
             font-weight: 600;
         }
         
@@ -2102,12 +2099,12 @@ def load_custom_css():
             padding: 0.75rem 1.5rem;
             font-weight: 500;
             transition: all 0.2s ease;
-            box-shadow: var(--shadow-sm);
+            box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
         }
         
         .stButton > button:hover {
             transform: translateY(-1px);
-            box-shadow: var(--shadow-md);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
         }
         
         /* Recommendation cards */
@@ -2120,12 +2117,12 @@ def load_custom_css():
         
         .recommendation-success {
             background-color: #f0fdf4;
-            border-left-color: var(--success-color);
+            border-left-color: #10b981;
         }
         
         .recommendation-warning {
             background-color: #fffbeb;
-            border-left-color: var(--warning-color);
+            border-left-color: #f59e0b;
         }
         
         .recommendation-info {
