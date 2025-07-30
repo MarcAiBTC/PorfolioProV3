@@ -1,4 +1,682 @@
-def route_to_page_enhanced(selected_page: str):
+def display_market_status():
+    """Display current market status with error handling."""
+    try:
+        market_info = putils.get_market_status()
+        status = market_info.get('status', 'Unknown')
+        is_open = market_info.get('is_open', False)
+        
+        status_icon = "🟢" if is_open else "🔴"
+        
+        st.markdown(f"**{status_icon} Market: {status}** | {market_info.get('local_time', 'Time unknown')}")
+        
+        if not is_open:
+            st.caption(f"Next open: {market_info.get('next_open', 'Unknown')}")
+            
+    except Exception as e:
+        logger.debug(f"Error displaying market status: {e}")
+        st.caption("🕐 Market status unavailable")
+
+def safe_load_portfolio(username: str, filename: Optional[str] = None) -> bool:
+    """Enhanced portfolio loading with comprehensive error handling."""
+    try:
+        with st.spinner("📂 Loading portfolio..."):
+            df = putils.load_portfolio(username, filename)
+            
+        if df is not None and not df.empty:
+            # Enhanced validation
+            required_cols = ['Ticker', 'Purchase Price', 'Quantity', 'Asset Type']
+            missing_cols = [col for col in required_cols if col not in df.columns]
+            
+            if missing_cols:
+                st.error(f"❌ Portfolio missing required columns: {', '.join(missing_cols)}")
+                
+                # Offer to fix common issues
+                if st.button("🔧 Try to Fix Automatically"):
+                    try:
+                        df = fix_portfolio_columns(df)
+                        if df is not None:
+                            putils.save_portfolio(username, df, overwrite=True)
+                            st.success("✅ Portfolio fixed and saved!")
+                            st.rerun()
+                    except Exception as e:
+                        st.error(f"Failed to fix portfolio: {str(e)}")
+                return False
+            
+            # Data cleaning and validation
+            original_count = len(df)
+            df = clean_portfolio_data(df)
+            cleaned_count = len(df)
+            
+            if cleaned_count < original_count:
+                st.warning(f"⚠️ Removed {original_count - cleaned_count} invalid rows during loading")
+            
+            # Update session state
+            st.session_state.portfolio_df = df
+            st.session_state.selected_portfolio_file = filename
+            st.session_state.portfolio_modified = False
+            st.session_state.last_refresh = datetime.now()
+
+            st.success(f"✅ Portfolio loaded successfully! ({len(df)} assets)")
+            logger.info(f"Portfolio loaded for user {username}: {len(df)} assets")
+            return True
+        else:
+            st.warning("⚠️ Portfolio file is empty or could not be loaded")
+            return False
+
+    except Exception as e:
+        error_msg = f"Error loading portfolio: {str(e)}"
+        st.error(f"❌ {error_msg}")
+        logger.error(f"Portfolio load failed for {username}: {e}")
+        
+        if st.session_state.get('education_mode', False):
+            with st.expander("🔧 Error Details"):
+                st.code(str(e))
+        return False
+
+def show_portfolio_quick_stats():
+    """Show quick portfolio statistics with error handling."""
+    try:
+        if st.session_state.portfolio_df is not None and not st.session_state.portfolio_df.empty:
+            df = st.session_state.portfolio_df
+            last_refresh = st.session_state.get('last_refresh')
+            refresh_text = last_refresh.strftime('%H:%M') if last_refresh else 'Unknown'
+            
+            # Create columns for metrics
+            col1, col2, col3, col4 = st.columns(4)
+            
+            with col1:
+                st.metric("🎯 Assets", len(df))
+            
+            with col2:
+                st.metric("📊 Asset Types", df['Asset Type'].nunique())
+            
+            with col3:
+                st.metric("📅 Last Updated", refresh_text)
+            
+            with col4:
+                file_name = st.session_state.get('selected_portfolio_file', 'Current')
+                st.metric("💾 File", file_name)
+        else:
+            st.info("No portfolio loaded yet")
+    except Exception as e:
+        logger.error(f"Error showing portfolio stats: {e}")
+        st.error("Error displaying portfolio statistics")
+
+def create_demo_portfolio():
+    """Create a demo portfolio for new users with error handling."""
+    try:
+        demo_data = [
+            {"Ticker": "AAPL", "Purchase Price": 150.0, "Quantity": 10, "Asset Type": "Stock", "Notes": "Demo tech stock"},
+            {"Ticker": "SPY", "Purchase Price": 400.0, "Quantity": 5, "Asset Type": "ETF", "Notes": "Demo market ETF"},
+            {"Ticker": "BTC-USD", "Purchase Price": 45000.0, "Quantity": 0.1, "Asset Type": "Crypto", "Notes": "Demo cryptocurrency"},
+            {"Ticker": "GOOGL", "Purchase Price": 2500.0, "Quantity": 2, "Asset Type": "Stock", "Notes": "Demo growth stock"},
+            {"Ticker": "QQQ", "Purchase Price": 350.0, "Quantity": 3, "Asset Type": "ETF", "Notes": "Demo tech ETF"}
+        ]
+        
+        demo_df = pd.DataFrame(demo_data)
+        demo_df['Purchase Date'] = datetime.now().strftime('%Y-%m-%d')
+        
+        # Save demo portfolio
+        putils.save_portfolio(st.session_state.username, demo_df, overwrite=True)
+        st.session_state.portfolio_df = demo_df
+        st.session_state.portfolio_modified = True
+        
+        st.success("✅ Demo portfolio created! Explore the features with sample data.")
+        
+    except Exception as e:
+        st.error(f"❌ Failed to create demo portfolio: {e}")
+        logger.error(f"Demo portfolio creation failed: {e}")
+
+def refresh_portfolio_data():
+    """Refresh portfolio data with enhanced error handling."""
+    try:
+        # Clear caches
+        putils.clear_all_caches()
+        
+        # Update timestamp
+        st.session_state.last_refresh = datetime.now()
+        
+        st.success("✅ Data refreshed successfully!")
+        st.rerun()
+        
+    except Exception as e:
+        st.error(f"❌ Refresh failed: {str(e)}")
+        logger.error(f"Portfolio refresh failed: {e}")
+
+def show_welcome_message_enhanced():
+    """Enhanced welcome message with better error handling."""
+    try:
+        if st.session_state.get('show_welcome', False) and st.session_state.get('authenticated', False):
+            st.markdown(f"""
+            ## 👋 Welcome back, {st.session_state.get('username', 'User')}!
+            
+            Your portfolio dashboard is ready with **real-time market data** and **AI-powered insights**.
+            """)
+            
+            # Quick start options
+            col1, col2, col3, col4 = st.columns(4)
+            
+            with col1:
+                if st.button("🚀 Get Started", type="primary"):
+                    st.session_state.show_welcome = False
+                    st.rerun()
+            
+            with col2:
+                if st.button("📚 Enable Learning"):
+                    st.session_state.education_mode = True
+                    st.session_state.show_welcome = False
+                    st.rerun()
+            
+            with col3:
+                if st.button("📊 View Demo Data"):
+                    # Load demo portfolio
+                    create_demo_portfolio()
+                    st.session_state.show_welcome = False
+                    st.rerun()
+            
+            with col4:
+                if st.button("❓ Show Help"):
+                    st.session_state.show_welcome = False
+                    st.rerun()
+            
+            st.markdown("---")
+    except Exception as e:
+        logger.error(f"Error showing welcome message: {e}")
+
+def display_empty_portfolio_guide():
+    """Enhanced empty portfolio guide with error handling."""
+    try:
+        st.markdown("## 🚀 Welcome to Portfolio Manager Pro!")
+        st.markdown("Start building your investment portfolio with our comprehensive tools")
+        
+        # Feature showcase
+        col1, col2, col3 = st.columns(3)
+        
+        with col1:
+            st.markdown("""
+            ### ➕ Smart Asset Addition
+            - 🔍 Search from 500+ popular assets
+            - 📊 Real-time price validation
+            - 🎯 Automatic categorization
+            - 📈 Live preview with P/L
+            """)
+            
+            if st.button("🚀 Add Your First Asset", type="primary"):
+                st.session_state.show_welcome = False
+        
+        with col2:
+            st.markdown("""
+            ### 📤 Bulk Import
+            - 📄 CSV/JSON file support
+            - 🔧 Automatic data cleaning
+            - ✅ Ticker validation
+            - 📋 Template downloads
+            """)
+            
+            if st.button("📁 Upload Portfolio File"):
+                pass
+        
+        with col3:
+            st.markdown("""
+            ### 📊 Advanced Analytics
+            - 📈 Real-time market data
+            - ⚡ Technical indicators (RSI, Beta)
+            - 🎯 Risk analysis & VaR
+            - 💡 AI-powered recommendations
+            """)
+        
+        # Quick start tips
+        with st.expander("💡 Quick Start Tips", expanded=True):
+            st.markdown("""
+            **For beginners:**
+            1. Start with popular ETFs like SPY (S&P 500) or QQQ (NASDAQ)
+            2. Enable Education Mode in the sidebar for helpful explanations
+            3. Use the asset picker to discover new investments
+            
+            **For experienced investors:**
+            1. Import your existing portfolio via CSV/JSON
+            2. Explore advanced metrics like Alpha, Beta, and Sharpe ratio
+            3. Set up automatic refreshing for real-time monitoring
+            """)
+    except Exception as e:
+        logger.error(f"Error displaying empty portfolio guide: {e}")
+        st.error("Error loading portfolio guide")
+
+def display_logout_confirmation_enhanced():
+    """Enhanced logout confirmation with error handling."""
+    try:
+        show_main_header("🚪 Sign Out", "Thanks for using Portfolio Manager Pro!")
+        
+        col1, col2, col3 = st.columns([1, 2, 1])
+        
+        with col2:
+            st.markdown("### 👋 See you soon!")
+            st.write(f"**{st.session_state.get('username', 'User')}**, your portfolio data has been saved securely.")
+            st.write("You can return anytime to continue tracking your investments.")
+            
+            st.markdown("---")
+            
+            col_a, col_b = st.columns(2)
+            
+            with col_a:
+                if st.button("⬅️ Stay Signed In", type="secondary"):
+                    st.info("👍 Continuing your session...")
+                    time.sleep(1)
+                    st.rerun()
+            
+            with col_b:
+                if st.button("🚪 Confirm Sign Out", type="primary"):
+                    handle_logout()
+    except Exception as e:
+        logger.error(f"Error displaying logout confirmation: {e}")
+        st.error("Error loading logout page")
+
+def handle_logout():
+    """Handle user logout process with error handling."""
+    try:
+        username = st.session_state.get('username', 'Unknown')
+        
+        # Clear session state
+        for key in list(st.session_state.keys()):
+            del st.session_state[key]
+        
+        # Reinitialize
+        initialize_session_state()
+        
+        st.success("👋 You have been signed out successfully!")
+        logger.info(f"User logged out: {username}")
+        time.sleep(1)
+        st.rerun()
+    except Exception as e:
+        logger.error(f"Error during logout: {e}")
+        st.error("Error during logout")
+
+# Fix additional functions that might have errors
+def history_page_enhanced():
+    """Enhanced history page with error handling."""
+    try:
+        show_main_header("📚 Portfolio History", "Manage your saved portfolios")
+        
+        username = st.session_state.get('username', '')
+        if not username:
+            st.error("User not found")
+            return
+            
+        files = putils.list_portfolios(username)
+        
+        if not files:
+            st.markdown("## 📝 No Portfolio History Yet")
+            st.markdown("Start building your investment tracking history!")
+            
+            col1, col2, col3 = st.columns(3)
+            
+            with col1:
+                st.markdown("### ➕ Add Assets")
+                st.write("Start by adding individual investments")
+            
+            with col2:
+                st.markdown("### 📤 Upload Files")
+                st.write("Import from CSV or JSON files")
+            
+            with col3:
+                st.markdown("### 💾 Auto-Save")
+                st.write("Your portfolios are saved automatically")
+            return
+        
+        st.write(f"📊 You have **{len(files)}** saved portfolios:")
+        
+        # Portfolio management interface
+        col1, col2 = st.columns([2, 1])
+        
+        with col1:
+            selected_file = st.selectbox(
+                "🗂️ Select Portfolio:",
+                files,
+                format_func=lambda x: f"{'📍 ' if x == st.session_state.get('selected_portfolio_file') else '📁 '}{x}",
+                help="Choose a portfolio to manage"
+            )
+        
+        with col2:
+            st.markdown("<br>", unsafe_allow_html=True)
+            col_a, col_b = st.columns(2)
+            
+            with col_a:
+                if st.button("📂 Load", help="Load selected portfolio"):
+                    if safe_load_portfolio(username, selected_file):
+                        st.success(f"✅ Loaded '{selected_file}'")
+            
+            with col_b:
+                if st.button("🗑️ Delete", help="Delete selected portfolio"):
+                    if selected_file == st.session_state.get('selected_portfolio_file'):
+                        st.error("❌ Cannot delete currently active portfolio")
+                    else:
+                        # Simple deletion confirmation
+                        if st.button("⚠️ Confirm Delete"):
+                            try:
+                                file_path = os.path.join(putils.PORTFOLIO_DIR, selected_file)
+                                os.remove(file_path)
+                                st.success(f"✅ Deleted '{selected_file}'")
+                                st.rerun()
+                            except Exception as e:
+                                st.error(f"Error deleting file: {e}")
+        
+        # Show file preview if selected
+        if selected_file:
+            try:
+                file_path = os.path.join(putils.PORTFOLIO_DIR, selected_file)
+                
+                if os.path.exists(file_path):
+                    # File metadata
+                    file_stats = os.stat(file_path)
+                    file_size = file_stats.st_size
+                    file_modified = datetime.fromtimestamp(file_stats.st_mtime)
+                    
+                    col1, col2, col3, col4 = st.columns(4)
+                    
+                    with col1:
+                        st.metric("📊 File Size", f"{file_size:,} bytes")
+                    
+                    with col2:
+                        st.metric("📅 Modified", file_modified.strftime("%Y-%m-%d"))
+                    
+                    with col3:
+                        st.metric("🕐 Time", file_modified.strftime("%H:%M:%S"))
+                    
+                    with col4:
+                        is_current = selected_file == st.session_state.get('selected_portfolio_file')
+                        status = "📍 Active" if is_current else "📁 Stored"
+                        st.metric("📌 Status", status)
+                    
+                    # Portfolio preview
+                    with st.expander("👀 Portfolio Preview", expanded=True):
+                        try:
+                            if selected_file.endswith('.csv'):
+                                preview_df = pd.read_csv(file_path)
+                            else:
+                                preview_df = pd.read_json(file_path)
+                            
+                            if not preview_df.empty:
+                                st.dataframe(preview_df.head(), use_container_width=True)
+                            else:
+                                st.warning("⚠️ Portfolio file appears to be empty")
+                        except Exception as e:
+                            st.error(f"Error loading preview: {e}")
+            except Exception as e:
+                st.error(f"Error accessing file: {e}")
+                
+    except Exception as e:
+        logger.error(f"Error in history page: {e}")
+        st.error("Error loading portfolio history")
+
+def settings_page():
+    """Settings page with error handling."""
+    try:
+        show_main_header("🔧 Settings", "Customize your Portfolio Manager Pro experience")
+        
+        # User settings
+        st.subheader("👤 User Preferences")
+        
+        col1, col2 = st.columns(2)
+        
+        with col1:
+            # Education mode
+            education_mode = st.checkbox(
+                "📚 Education Mode",
+                value=st.session_state.get('education_mode', True),
+                help="Show helpful tooltips and explanations throughout the app"
+            )
+            st.session_state.education_mode = education_mode
+            
+            # Auto refresh
+            auto_refresh = st.checkbox(
+                "🔄 Auto Refresh Data",
+                value=st.session_state.get('auto_refresh_enabled', False),
+                help="Automatically refresh portfolio data every 5 minutes"
+            )
+            st.session_state.auto_refresh_enabled = auto_refresh
+            
+            # Advanced metrics
+            show_advanced = st.checkbox(
+                "📊 Show Advanced Metrics",
+                value=st.session_state.get('show_advanced_metrics', True),
+                help="Display technical indicators like RSI, Beta, Alpha"
+            )
+            st.session_state.show_advanced_metrics = show_advanced
+        
+        with col2:
+            # Data timeframe
+            timeframe_options = ["1mo", "3mo", "6mo", "1y", "2y"]
+            current_timeframe = st.session_state.get('selected_timeframe', '6mo')
+            
+            timeframe = st.selectbox(
+                "📅 Historical Data Timeframe",
+                timeframe_options,
+                index=timeframe_options.index(current_timeframe) if current_timeframe in timeframe_options else 2,
+                help="Period for historical analysis and technical indicators"
+            )
+            st.session_state.selected_timeframe = timeframe
+            
+            # Theme (placeholder for future)
+            st.selectbox(
+                "🎨 Theme",
+                ["Light", "Dark (Coming Soon)"],
+                disabled=True,
+                help="App theme - Dark mode coming in future update"
+            )
+        
+        st.markdown("---")
+        
+        # Data management
+        st.subheader("💾 Data Management")
+        
+        col1, col2, col3 = st.columns(3)
+        
+        with col1:
+            if st.button("🧹 Clear Cache", help="Clear all cached market data"):
+                try:
+                    putils.clear_all_caches()
+                    st.success("✅ Cache cleared successfully!")
+                except Exception as e:
+                    st.error(f"Error clearing cache: {e}")
+        
+        with col2:
+            if st.button("🔄 Reset Settings", help="Reset all settings to defaults"):
+                try:
+                    # Reset to defaults
+                    st.session_state.education_mode = True
+                    st.session_state.auto_refresh_enabled = False
+                    st.session_state.show_advanced_metrics = True
+                    st.session_state.selected_timeframe = '6mo'
+                    st.success("✅ Settings reset to defaults!")
+                    st.rerun()
+                except Exception as e:
+                    st.error(f"Error resetting settings: {e}")
+        
+        with col3:
+            if st.button("📊 System Info", help="Show system information"):
+                try:
+                    st.info(f"""
+                    **System Information:**
+                    - App Version: {st.session_state.get('app_version', '2.2.0')}
+                    - yfinance Available: {'✅' if putils.YF_AVAILABLE else '❌'}
+                    - Cache Items: {len(putils.PRICE_CACHE)}
+                    """)
+                except Exception as e:
+                    st.error(f"Error getting system info: {e}")
+        
+        st.markdown("---")
+        
+        # Account settings
+        st.subheader("🔐 Account Settings")
+        
+        user_info = f"Logged in as: **{st.session_state.get('username', 'Unknown')}**"
+        st.markdown(user_info)
+        
+        if st.button("🚪 Sign Out", type="secondary"):
+            handle_logout()
+            
+    except Exception as e:
+        logger.error(f"Error in settings page: {e}")
+        st.error("Error loading settings page")
+
+def help_page_enhanced():
+    """Enhanced help page with error handling."""
+    try:
+        show_main_header("❓ Help & Guide", "Learn how to maximize your investment management experience")
+        
+        # Help navigation
+        help_tab1, help_tab2, help_tab3, help_tab4 = st.tabs([
+            "🚀 Getting Started",
+            "📊 Understanding Metrics", 
+            "🔧 Troubleshooting",
+            "💡 Best Practices"
+        ])
+        
+        with help_tab1:
+            st.subheader("🚀 Getting Started")
+            
+            st.markdown("### Creating Your First Portfolio")
+            
+            col1, col2 = st.columns(2)
+            
+            with col1:
+                st.markdown("**Option 1: Add Assets Manually**")
+                st.markdown("""
+                1. Go to the **"➕ Add Asset"** tab
+                2. Use the smart asset picker to search for assets
+                3. Enter purchase price, quantity, and asset type
+                4. Click "Add Asset" to save
+                """)
+            
+            with col2:
+                st.markdown("**Option 2: Upload a File**")
+                st.markdown("""
+                1. Go to the **"📤 Upload Portfolio"** tab
+                2. Download the CSV or JSON template
+                3. Fill in your portfolio data
+                4. Upload the file and import
+                """)
+        
+        with help_tab2:
+            st.subheader("📊 Understanding Key Metrics")
+            
+            with st.expander("💰 Value Metrics", expanded=True):
+                st.markdown("""
+                - **Total Value**: Current market value (Current Price × Quantity)
+                - **P/L (Profit/Loss)**: Difference between current value and cost
+                - **P/L %**: Percentage return on investment
+                - **Weight %**: Percentage of total portfolio value
+                """)
+            
+            with st.expander("📊 Technical Indicators"):
+                st.markdown("""
+                - **RSI**: Momentum indicator (0-100). <30 oversold, >70 overbought
+                - **Volatility**: Annual price volatility percentage
+                - **Beta**: Market correlation. >1 more volatile, <1 less volatile
+                - **Alpha**: Excess return vs benchmark
+                """)
+        
+        with help_tab3:
+            st.subheader("🔧 Common Issues & Solutions")
+            
+            with st.expander("❌ Data fetching problems"):
+                st.markdown("""
+                **Solutions:**
+                - Check internet connection
+                - Verify ticker symbols are correct
+                - Try refreshing the page
+                - Clear cache using Settings page
+                """)
+            
+            with st.expander("📤 File upload errors"):
+                st.markdown("""
+                **Solutions:**
+                - Ensure file has required columns
+                - Check file size is under 10MB
+                - Use supported formats (CSV, JSON, Excel)
+                - Remove empty rows
+                """)
+        
+        with help_tab4:
+            st.subheader("💡 Best Practices")
+            
+            col1, col2 = st.columns(2)
+            
+            with col1:
+                st.markdown("### Portfolio Management")
+                st.markdown("""
+                - **Diversify**: Don't put all money in one asset
+                - **Regular Review**: Check portfolio monthly
+                - **Keep Records**: Note why you bought each asset
+                - **Risk Management**: Don't risk more than you can lose
+                """)
+            
+            with col2:
+                st.markdown("### Using This App")
+                st.markdown("""
+                - **Education Mode**: Keep it on to learn
+                - **Save Regularly**: Use auto-save features
+                - **Validate Tickers**: Use the validation feature
+                - **Refresh Data**: Keep market data current
+                """)
+        
+        st.warning("⚠️ **Disclaimer**: This app is for informational purposes only. Not financial advice.")
+        
+    except Exception as e:
+        logger.error(f"Error in help page: {e}")
+        st.error("Error loading help page")
+
+# Final main application function with comprehensive error handling
+def main():
+    """Enhanced main application with comprehensive error handling."""
+    try:
+        # Create sidebar and get navigation choice
+        selected_page = create_sidebar_enhanced()
+        
+        if not st.session_state.get('authenticated', False):
+            display_auth_page_enhanced()
+            return
+        
+        # Show welcome message for new sessions
+        if st.session_state.get('show_welcome', False):
+            show_welcome_message_enhanced()
+        
+        # Main content routing with error handling
+        try:
+            if selected_page == "📊 Dashboard":
+                display_portfolio_overview()
+            elif selected_page == "➕ Add Asset":
+                add_asset_page()
+            elif selected_page == "📤 Upload Portfolio":
+                upload_portfolio_page_enhanced()
+            elif selected_page == "📚 Portfolio History":
+                history_page_enhanced()
+            elif selected_page == "🔧 Settings":
+                settings_page()
+            elif selected_page == "❓ Help":
+                help_page_enhanced()
+            elif selected_page == "🚪 Sign Out":
+                display_logout_confirmation_enhanced()
+        except Exception as page_error:
+            st.error(f"❌ Page error: {str(page_error)}")
+            logger.error(f"Page routing error for {selected_page}: {page_error}")
+            
+            # Offer recovery options
+            col1, col2 = st.columns(2)
+            with col1:
+                if st.button("🔄 Refresh Page"):
+                    st.rerun()
+            with col2:
+                if st.button("🏠 Go to Dashboard"):
+                    st.session_state.show_welcome = False
+                    st.rerun()
+        
+    except Exception as e:
+        handle_application_error_enhanced(e)
+
+# Application entry point
+if __name__ == "__main__":
+    main()def route_to_page_enhanced(selected_page: str):
     """Enhanced page routing with better error handling."""
     try:
         if selected_page == "📊 Dashboard":
@@ -1973,24 +2651,11 @@ st.set_page_config(
 
 # Enhanced CSS styling
 def load_custom_css():
-    """Load enhanced custom CSS styles."""
+    """Load enhanced custom CSS styles - FIXED VERSION."""
     css_content = """
     <style>
         /* Import modern fonts */
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
-        
-        /* Global variables */
-        .css-variables {
-            --primary-color: #667eea;
-            --secondary-color: #764ba2;
-            --success-color: #10b981;
-            --warning-color: #f59e0b;
-            --error-color: #ef4444;
-            --background-light: #f8fafc;
-            --text-primary: #1e293b;
-            --text-secondary: #64748b;
-            --border-color: #e2e8f0;
-        }
         
         /* Main header styling */
         .main-header {
@@ -2023,7 +2688,7 @@ def load_custom_css():
             border-radius: 12px;
             box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
             border: 1px solid #e2e8f0;
-            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            transition: transform 0.2s ease;
         }
         
         .stMetric:hover {
@@ -2108,26 +2773,28 @@ def load_custom_css():
         }
         
         /* Recommendation cards */
-        .recommendation-card {
+        .recommendation-success {
+            background-color: #f0fdf4;
+            border-left: 4px solid #10b981;
             border-radius: 12px;
             padding: 1rem;
             margin: 0.5rem 0;
-            border-left: 4px solid;
-        }
-        
-        .recommendation-success {
-            background-color: #f0fdf4;
-            border-left-color: #10b981;
         }
         
         .recommendation-warning {
             background-color: #fffbeb;
-            border-left-color: #f59e0b;
+            border-left: 4px solid #f59e0b;
+            border-radius: 12px;
+            padding: 1rem;
+            margin: 0.5rem 0;
         }
         
         .recommendation-info {
             background-color: #f0f9ff;
-            border-left-color: #3b82f6;
+            border-left: 4px solid #3b82f6;
+            border-radius: 12px;
+            padding: 1rem;
+            margin: 0.5rem 0;
         }
         
         /* Loading animations */
@@ -2137,7 +2804,23 @@ def load_custom_css():
         }
         
         .loading-pulse {
-            animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+            animation: pulse 2s ease-in-out infinite;
+        }
+        
+        /* Feature cards for homepage */
+        .feature-card {
+            background: white;
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+            border: 1px solid #e2e8f0;
+            text-align: center;
+            transition: transform 0.2s ease;
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
         }
         
         /* Mobile responsiveness */
@@ -2153,6 +2836,31 @@ def load_custom_css():
             .welcome-box {
                 padding: 1.5rem;
             }
+            
+            .asset-picker {
+                padding: 1rem;
+            }
+        }
+        
+        /* Fix for Streamlit selectbox */
+        .stSelectbox > div > div {
+            border-radius: 8px;
+        }
+        
+        /* Fix for Streamlit text input */
+        .stTextInput > div > div > input {
+            border-radius: 8px;
+        }
+        
+        /* Fix for Streamlit number input */
+        .stNumberInput > div > div > input {
+            border-radius: 8px;
+        }
+        
+        /* General container improvements */
+        .block-container {
+            max-width: 1200px;
+            padding-top: 2rem;
         }
     </style>
     """
@@ -2204,15 +2912,13 @@ def display_enhanced_asset_picker():
     st.subheader("🔍 Smart Asset Picker")
     
     with st.container():
-        st.markdown('<div class="asset-picker">', unsafe_allow_html=True)
-        
         # Search and filter options
         col1, col2, col3 = st.columns([2, 1, 1])
         
         with col1:
             search_query = st.text_input(
                 "🔍 Search assets",
-                value=st.session_state.asset_search_query,
+                value=st.session_state.get('asset_search_query', ''),
                 placeholder="Type ticker or company name (e.g., AAPL, Apple, Tesla)",
                 help="Search through 500+ popular assets"
             )
@@ -2223,7 +2929,7 @@ def display_enhanced_asset_picker():
             selected_category = st.selectbox(
                 "📊 Category",
                 asset_categories,
-                index=asset_categories.index(st.session_state.selected_asset_category)
+                index=asset_categories.index(st.session_state.get('selected_asset_category', 'All'))
             )
             st.session_state.selected_asset_category = selected_category
         
@@ -2233,69 +2939,75 @@ def display_enhanced_asset_picker():
         
         # Display search results
         if search_query and len(search_query) >= 1:
-            results = putils.search_popular_assets(search_query, limit=20)
-            
-            if results:
-                st.write(f"**Found {len(results)} matching assets:**")
+            try:
+                results = putils.search_popular_assets(search_query, limit=20)
                 
-                # Display results in a nice format
-                for i, asset in enumerate(results[:10]):  # Show top 10
-                    col_ticker, col_name, col_category, col_action = st.columns([1, 3, 2, 1])
+                if results:
+                    st.write(f"**Found {len(results)} matching assets:**")
                     
-                    with col_ticker:
-                        st.code(asset['ticker'])
+                    # Display results in a nice format
+                    for i, asset in enumerate(results[:10]):  # Show top 10
+                        col_ticker, col_name, col_category, col_action = st.columns([1, 3, 2, 1])
+                        
+                        with col_ticker:
+                            st.code(asset['ticker'])
+                        
+                        with col_name:
+                            st.write(asset['name'])
+                        
+                        with col_category:
+                            st.caption(asset['category'])
+                        
+                        with col_action:
+                            if st.button("➕", key=f"add_{asset['ticker']}_{i}", help=f"Add {asset['ticker']}"):
+                                # Auto-fill the form with selected asset
+                                return asset['ticker'], asset['name']
                     
-                    with col_name:
-                        st.write(asset['name'])
-                    
-                    with col_category:
-                        st.caption(asset['category'])
-                    
-                    with col_action:
-                        if st.button("➕", key=f"add_{asset['ticker']}_{i}", help=f"Add {asset['ticker']}"):
-                            # Auto-fill the form with selected asset
-                            return asset['ticker'], asset['name']
-                
-                if len(results) > 10:
-                    st.info(f"Showing top 10 results. {len(results) - 10} more available.")
-            else:
-                st.warning("🔍 No assets found. Try a different search term.")
+                    if len(results) > 10:
+                        st.info(f"Showing top 10 results. {len(results) - 10} more available.")
+                else:
+                    st.warning("🔍 No assets found. Try a different search term.")
+            except Exception as e:
+                st.error(f"Error searching assets: {str(e)}")
         
         # Category browser
         elif selected_category != "All":
-            category_map = {
-                "Stocks": "stocks",
-                "ETFs": "etfs", 
-                "Crypto": "crypto",
-                "Indices": "indices",
-                "Commodities": "commodities"
-            }
-            
-            if selected_category in category_map:
-                assets_by_cat = putils.get_assets_by_category(category_map[selected_category])
+            try:
+                category_map = {
+                    "Stocks": "stocks",
+                    "ETFs": "etfs", 
+                    "Crypto": "crypto",
+                    "Indices": "indices",
+                    "Commodities": "commodities"
+                }
                 
-                if assets_by_cat:
-                    st.write(f"**Popular {selected_category}:**")
+                if selected_category in category_map:
+                    assets_by_cat = putils.get_assets_by_category(category_map[selected_category])
                     
-                    # Group by subcategory
-                    df_assets = pd.DataFrame(assets_by_cat)
-                    if not df_assets.empty:
-                        for subcategory in df_assets['category'].unique():
-                            with st.expander(f"📁 {subcategory}", expanded=True):
-                                cat_assets = df_assets[df_assets['category'] == subcategory]
-                                
-                                for i, (_, asset) in enumerate(cat_assets.iterrows()):
-                                    col_ticker, col_name, col_action = st.columns([1, 4, 1])
+                    if assets_by_cat:
+                        st.write(f"**Popular {selected_category}:**")
+                        
+                        # Group by subcategory
+                        df_assets = pd.DataFrame(assets_by_cat)
+                        if not df_assets.empty:
+                            for subcategory in df_assets['category'].unique():
+                                with st.expander(f"📁 {subcategory}", expanded=True):
+                                    cat_assets = df_assets[df_assets['category'] == subcategory]
                                     
-                                    with col_ticker:
-                                        st.code(asset['ticker'])
-                                    
-                                    with col_name:
-                                        st.write(asset['name'])
-                                    
-                                    with col_action:
-                                        if st.button("➕", key=f"cat_{asset['ticker']}_{i}", help=f"Add {asset['ticker']}"):
-                                            return asset['ticker'], asset['name']
+                                    for i, (_, asset) in enumerate(cat_assets.iterrows()):
+                                        col_ticker, col_name, col_action = st.columns([1, 4, 1])
+                                        
+                                        with col_ticker:
+                                            st.code(asset['ticker'])
+                                        
+                                        with col_name:
+                                            st.write(asset['name'])
+                                        
+                                        with col_action:
+                                            if st.button("➕", key=f"cat_{asset['ticker']}_{i}", help=f"Add {asset['ticker']}"):
+                                                return asset['ticker'], asset['name']
+            except Exception as e:
+                st.error(f"Error loading category assets: {str(e)}")
         
         # Popular picks
         else:
@@ -2311,8 +3023,6 @@ def display_enhanced_asset_picker():
                 with cols[i % 3]:
                     if st.button(f"**{ticker}**\n{name}", key=f"popular_{ticker}"):
                         return ticker, name
-        
-        st.markdown('</div>', unsafe_allow_html=True)
     
     return None, None
 
