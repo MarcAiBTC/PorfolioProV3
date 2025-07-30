@@ -1,0 +1,35 @@
+name: Lint & Smoke Test
+
+on:
+  push:
+    paths:
+      - '**/*.py'
+  pull_request:
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: [3.9, 3.10, 3.11]
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Install dependencies
+        run: |
+          pip install black isort flake8 streamlit
+          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+      - name: Check imports order
+        run: isort --check .
+      - name: Check formatting
+        run: black --check .
+      - name: Lint with flake8
+        run: flake8 --max-line-length=120
+      - name: Streamlit smoke test
+        run: |
+          nohup streamlit run app.py --server.headless true &
+          sleep 5
+          pgrep -f streamlit || (echo "Streamlit no arrancó" && exit 1)
