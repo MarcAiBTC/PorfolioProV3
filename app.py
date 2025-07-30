@@ -1834,8 +1834,7 @@ def display_unauthenticated_sidebar_enhanced():
 # Application Entry Point
 # ============================================================================
 
-if __name__ == "__main__":
-    main()def safe_load_portfolio(username: str, filename: Optional[str] = None) -> bool:
+main()def safe_load_portfolio(username: str, filename: Optional[str] = None) -> bool:
     """Enhanced portfolio loading with better error handling."""
     try:
         with st.spinner("📂 Loading portfolio..."):
@@ -1884,6 +1883,9 @@ if __name__ == "__main__":
         show_error_with_details(error_msg, traceback.format_exc())
         logger.error(f"Portfolio load failed for {username}: {e}")
         return False
+        
+if __name__ == "__main__":
+    main()
 
 def clean_portfolio_data(df: pd.DataFrame) -> pd.DataFrame:
     """Clean and validate portfolio data."""
