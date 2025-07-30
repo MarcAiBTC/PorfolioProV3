@@ -3396,8 +3396,6 @@ def load_custom_css():
             <h1>📊 Portfolio Manager Pro</h1>
             </div>
             """, unsafe_allow_html=True)
-
-        }
         
         st.markdown("""
     <style>
