@@ -2661,7 +2661,7 @@ st.set_page_config(
 
 # Enhanced CSS styling
 def load_custom_css():
-    """Load enhanced custom CSS styles - COMPLETELY FIXED VERSION."""
+    """Load enhanced custom CSS styles."""
     css_content = '''
     <style>
         /* Import modern fonts */
